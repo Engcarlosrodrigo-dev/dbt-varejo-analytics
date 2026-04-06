@@ -1,0 +1,13 @@
+regiao_id,regiao_nome,sigla_estado,estado_nome
+1,Sudeste,SP,Sao Paulo
+2,Sudeste,RJ,Rio de Janeiro
+3,Sudeste,MG,Minas Gerais
+4,Sul,RS,Rio Grande do Sul
+5,Sul,SC,Santa Catarina
+6,Sul,PR,Parana
+7,Nordeste,BA,Bahia
+8,Nordeste,PE,Pernambuco
+9,Nordeste,CE,Ceara
+10,Norte,AM,Amazonas
+11,Centro-Oeste,GO,Goias
+12,Centro-Oeste,DF,Distrito Federal

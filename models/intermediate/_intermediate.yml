@@ -1,0 +1,109 @@
+version: 2
+
+models:
+  - name: int_vendas_enriquecidas
+    description: >
+      Vendas com dados de itens agregados, informações de cliente e loja já
+      denormalizadas. Base para todos os marts de análise de vendas.
+    columns:
+      - name: venda_id
+        description: PK da venda
+        tests:
+          - unique
+          - not_null
+      - name: cliente_id
+        description: FK para cliente
+      - name: loja_id
+        description: FK para loja
+      - name: data_venda
+        description: Data da venda
+      - name: status_venda
+        description: Status da venda
+      - name: quantidade_itens
+        description: Número total de itens na venda
+      - name: valor_bruto_total
+        description: Soma de valor_bruto_item de todos os itens
+      - name: valor_desconto_total
+        description: Soma de todos os descontos (item + cabeçalho)
+      - name: valor_liquido_total
+        description: Receita líquida da venda
+      - name: nome_loja
+        description: Nome da loja desnormalizado
+      - name: tipo_loja
+        description: Tipo de canal da loja
+      - name: estado_loja
+        description: UF da loja
+      - name: nome_cliente
+        description: Nome do cliente desnormalizado
+      - name: estado_cliente
+        description: UF do cliente
+      - name: genero_cliente
+        description: Gênero do cliente
+
+  - name: int_clientes_segmentados
+    description: >
+      Agrega histórico de compras por cliente e aplica segmentação RFM
+      (Recência, Frequência, Monetário) para classificação de perfil.
+    columns:
+      - name: cliente_id
+        description: PK do cliente
+        tests:
+          - unique
+          - not_null
+      - name: nome_completo
+        description: Nome do cliente
+      - name: email
+        description: E-mail do cliente
+      - name: total_compras
+        description: Número de compras concluídas
+      - name: primeira_compra
+        description: Data da primeira compra
+      - name: ultima_compra
+        description: Data da última compra
+      - name: dias_desde_ultima_compra
+        description: Recência em dias
+      - name: ticket_medio
+        description: Valor médio por venda
+      - name: valor_total_gasto
+        description: Valor total em compras concluídas
+      - name: score_recencia
+        description: Score de recência (1-5, 5 = mais recente)
+      - name: score_frequencia
+        description: Score de frequência (1-5, 5 = mais frequente)
+      - name: score_monetario
+        description: Score monetário (1-5, 5 = maior gasto)
+      - name: segmento_rfm
+        description: "Segmento: CAMPIAO, LEAL, POTENCIAL, RISCO, PERDIDO"
+
+  - name: int_produtos_categoria
+    description: >
+      Produtos enriquecidos com dados de categoria e fornecedor,
+      além de métricas de venda agregadas por produto.
+    columns:
+      - name: produto_id
+        description: PK do produto
+        tests:
+          - unique
+          - not_null
+      - name: sku
+        description: SKU do produto
+      - name: nome_produto
+        description: Nome do produto
+      - name: categoria_nome
+        description: Nome da categoria (do seed)
+      - name: departamento
+        description: Departamento do produto
+      - name: nome_fornecedor
+        description: Nome do fornecedor
+      - name: preco_venda
+        description: Preço de venda atual
+      - name: margem_bruta
+        description: Margem bruta percentual
+      - name: faixa_preco
+        description: Classificação por faixa de preço
+      - name: total_unidades_vendidas
+        description: Total de unidades vendidas no período
+      - name: receita_total
+        description: Receita total gerada pelo produto
+      - name: rank_receita_categoria
+        description: Ranking por receita dentro da categoria

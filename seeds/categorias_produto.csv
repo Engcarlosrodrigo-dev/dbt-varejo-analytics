@@ -1,0 +1,11 @@
+categoria_id,categoria_nome,categoria_descricao,departamento
+1,Eletronicos,Smartphones, tablets e acessorios,Tecnologia
+2,Informatica,Computadores, notebooks e perifericos,Tecnologia
+3,Eletrodomesticos,Geladeiras, fogoes e lavadoras,Casa
+4,Moveis,Sofas, mesas e cadeiras,Casa
+5,Roupas Masculinas,Camisas, calcas e acessorios masculinos,Vestuario
+6,Roupas Femininas,Blusas, vestidos e acessorios femininos,Vestuario
+7,Calcados,Tenis, sapatos e sandilhas,Vestuario
+8,Alimentos,Produtos alimenticios e bebidas,Supermercado
+9,Limpeza,Produtos de limpeza e higiene,Supermercado
+10,Beleza,Cosmeticos e cuidados pessoais,Saude e Beleza

@@ -1,0 +1,163 @@
+version: 2
+
+sources:
+  - name: raw_varejo
+    description: >
+      Dados brutos do sistema transacional de varejo (ERP).
+      Tabelas carregadas via ingestão diária pelo pipeline de dados.
+    database: varejo_analytics
+    schema: raw
+    tables:
+      - name: vendas
+        description: Cabeçalho das ordens de venda
+        columns:
+          - name: venda_id
+            description: Identificador único da venda
+            tests:
+              - unique
+              - not_null
+          - name: cliente_id
+            description: FK para a tabela de clientes
+            tests:
+              - not_null
+          - name: loja_id
+            description: FK para a tabela de lojas
+            tests:
+              - not_null
+          - name: data_venda
+            description: Data e hora da venda
+            tests:
+              - not_null
+          - name: forma_pagamento_id
+            description: FK para forma de pagamento
+          - name: status_venda
+            description: "Status: CONCLUIDA, CANCELADA, DEVOLVIDA"
+          - name: valor_desconto
+            description: Valor total de desconto aplicado
+          - name: created_at
+            description: Timestamp de criação do registro
+          - name: updated_at
+            description: Timestamp da última atualização
+
+      - name: itens_venda
+        description: Itens de cada ordem de venda
+        columns:
+          - name: item_id
+            description: Identificador único do item
+            tests:
+              - unique
+              - not_null
+          - name: venda_id
+            description: FK para a venda
+            tests:
+              - not_null
+              - relationships:
+                  to: source('raw_varejo', 'vendas')
+                  field: venda_id
+          - name: produto_id
+            description: FK para o produto
+            tests:
+              - not_null
+          - name: quantidade
+            description: Quantidade vendida
+          - name: preco_unitario
+            description: Preço unitário no momento da venda
+          - name: valor_desconto_item
+            description: Desconto aplicado ao item
+
+      - name: clientes
+        description: Cadastro de clientes
+        columns:
+          - name: cliente_id
+            description: Identificador único do cliente
+            tests:
+              - unique
+              - not_null
+          - name: nome_completo
+            description: Nome completo do cliente
+          - name: email
+            description: E-mail do cliente
+            tests:
+              - unique
+          - name: cpf
+            description: CPF do cliente (mascarado)
+          - name: data_nascimento
+            description: Data de nascimento
+          - name: genero
+            description: "Gênero: M, F, N (não informado)"
+          - name: cidade
+            description: Cidade do cliente
+          - name: estado
+            description: Estado (UF) do cliente
+          - name: data_cadastro
+            description: Data de cadastro na plataforma
+          - name: ativo
+            description: Indica se o cliente está ativo
+
+      - name: produtos
+        description: Catálogo de produtos
+        columns:
+          - name: produto_id
+            description: Identificador único do produto
+            tests:
+              - unique
+              - not_null
+          - name: sku
+            description: Código SKU do produto
+            tests:
+              - unique
+              - not_null
+          - name: nome_produto
+            description: Nome do produto
+          - name: categoria_id
+            description: FK para categoria
+          - name: fornecedor_id
+            description: FK para fornecedor
+          - name: preco_custo
+            description: Preço de custo do produto
+          - name: preco_venda
+            description: Preço de venda sugerido
+          - name: estoque_atual
+            description: Quantidade em estoque
+          - name: ativo
+            description: Indica se o produto está ativo no catálogo
+
+      - name: lojas
+        description: Cadastro das lojas físicas e online
+        columns:
+          - name: loja_id
+            description: Identificador único da loja
+            tests:
+              - unique
+              - not_null
+          - name: nome_loja
+            description: Nome da loja
+          - name: tipo_loja
+            description: "Tipo: FISICA, ECOMMERCE, MARKETPLACE"
+          - name: cidade
+            description: Cidade da loja
+          - name: estado
+            description: Estado (UF) da loja
+          - name: data_abertura
+            description: Data de abertura da loja
+          - name: ativa
+            description: Indica se a loja está ativa
+
+      - name: fornecedores
+        description: Cadastro de fornecedores
+        columns:
+          - name: fornecedor_id
+            description: Identificador único do fornecedor
+            tests:
+              - unique
+              - not_null
+          - name: nome_fornecedor
+            description: Razão social do fornecedor
+          - name: cnpj
+            description: CNPJ do fornecedor
+          - name: cidade
+            description: Cidade sede do fornecedor
+          - name: estado
+            description: Estado (UF) do fornecedor
+          - name: ativo
+            description: Indica se o fornecedor está ativo

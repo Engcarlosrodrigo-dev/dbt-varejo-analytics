@@ -1,0 +1,9 @@
+forma_pagamento_id,forma_pagamento_nome,tipo,permite_parcelamento
+1,Credito Visa,Cartao de Credito,true
+2,Credito Mastercard,Cartao de Credito,true
+3,Debito,Cartao de Debito,false
+4,PIX,Transferencia,false
+5,Boleto,Boleto,false
+6,Dinheiro,Dinheiro,false
+7,Credito Elo,Cartao de Credito,true
+8,Credito Amex,Cartao de Credito,true

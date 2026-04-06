@@ -1,0 +1,153 @@
+version: 2
+
+models:
+  - name: mart_vendas_diarias
+    description: >
+      Métricas diárias de vendas agregadas por data, loja e canal.
+      Granularidade: 1 linha por dia x loja. Principal tabela para
+      dashboards de performance comercial.
+    columns:
+      - name: data_venda
+        description: Data da venda
+        tests:
+          - not_null
+      - name: loja_id
+        description: FK para loja
+        tests:
+          - not_null
+      - name: nome_loja
+        description: Nome da loja
+      - name: tipo_loja
+        description: Canal de venda
+      - name: estado_loja
+        description: UF da loja
+      - name: total_vendas
+        description: Número de vendas concluídas
+      - name: total_cancelamentos
+        description: Número de vendas canceladas
+      - name: total_devolucoes
+        description: Número de devoluções
+      - name: receita_bruta
+        description: Soma de valor_bruto_total das vendas concluídas
+      - name: total_descontos
+        description: Soma de todos os descontos das vendas concluídas
+      - name: receita_liquida
+        description: Receita líquida do dia por loja
+      - name: ticket_medio
+        description: Receita líquida / total de vendas concluídas
+      - name: total_itens_vendidos
+        description: Total de itens vendidos no dia
+
+  - name: mart_desempenho_produtos
+    description: >
+      Visão consolidada de desempenho de produtos com métricas de venda,
+      margem e estoque. Atualizada diariamente.
+    columns:
+      - name: produto_id
+        description: PK do produto
+        tests:
+          - unique
+          - not_null
+      - name: sku
+        description: SKU do produto
+      - name: nome_produto
+        description: Nome do produto
+      - name: categoria_nome
+        description: Categoria
+      - name: departamento
+        description: Departamento
+      - name: nome_fornecedor
+        description: Fornecedor
+      - name: preco_venda
+        description: Preço de venda atual
+      - name: margem_bruta
+        description: Margem bruta percentual
+      - name: faixa_preco
+        description: Classificação de preço
+      - name: estoque_atual
+        description: Estoque atual
+      - name: status_estoque
+        description: "CRITICO (<10), BAIXO (<50), ADEQUADO, ALTO"
+      - name: total_unidades_vendidas
+        description: Total de unidades vendidas no período
+      - name: receita_total
+        description: Receita total gerada
+      - name: rank_receita_categoria
+        description: Posição por receita na categoria
+      - name: rank_receita_geral
+        description: Posição por receita geral no catálogo
+
+  - name: mart_clientes_rfm
+    description: >
+      Segmentação de clientes baseada em análise RFM.
+      Contém métricas de comportamento de compra e classificação
+      para uso em campanhas de marketing e retenção.
+    columns:
+      - name: cliente_id
+        description: PK do cliente
+        tests:
+          - unique
+          - not_null
+      - name: nome_completo
+        description: Nome do cliente
+      - name: email
+        description: E-mail do cliente
+      - name: genero
+        description: Gênero do cliente
+      - name: idade
+        description: Idade atual
+      - name: faixa_etaria
+        description: "Faixa: 18-25, 26-35, 36-45, 46-60, 60+"
+      - name: cidade
+        description: Cidade do cliente
+      - name: estado
+        description: UF do cliente
+      - name: total_compras
+        description: Total de compras concluídas
+      - name: valor_total_gasto
+        description: Valor total em compras
+      - name: ticket_medio
+        description: Ticket médio por compra
+      - name: dias_desde_ultima_compra
+        description: Recência em dias
+      - name: segmento_rfm
+        description: Segmento de comportamento RFM
+      - name: valor_lifetime
+        description: Estimativa de valor vitalício (LTV simples)
+
+  - name: mart_desempenho_lojas
+    description: >
+      Métricas consolidadas de desempenho por loja, incluindo comparativo
+      com média da rede e ranking de performance.
+    columns:
+      - name: loja_id
+        description: PK da loja
+        tests:
+          - unique
+          - not_null
+      - name: nome_loja
+        description: Nome da loja
+      - name: tipo_loja
+        description: Canal de venda
+      - name: cidade
+        description: Cidade
+      - name: estado
+        description: UF
+      - name: anos_operacao
+        description: Tempo de operação em anos
+      - name: ativa
+        description: Flag de loja ativa
+      - name: total_vendas
+        description: Total de vendas concluídas no período
+      - name: receita_total
+        description: Receita líquida total no período
+      - name: ticket_medio
+        description: Ticket médio da loja
+      - name: total_clientes_unicos
+        description: Número de clientes únicos atendidos
+      - name: receita_media_rede
+        description: Receita média de todas as lojas (para comparativo)
+      - name: variacao_vs_media
+        description: Diferença percentual vs média da rede
+      - name: rank_receita
+        description: Ranking geral por receita

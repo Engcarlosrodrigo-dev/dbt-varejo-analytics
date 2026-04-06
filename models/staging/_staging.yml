@@ -1,0 +1,193 @@
+version: 2
+
+models:
+  - name: stg_vendas
+    description: >
+      Staging de vendas. Renomeia colunas, aplica tipos corretos e
+      filtra registros inválidos da tabela raw de ordens de venda.
+    columns:
+      - name: venda_id
+        description: PK da venda
+        tests:
+          - unique
+          - not_null
+      - name: cliente_id
+        description: FK para stg_clientes
+        tests:
+          - not_null
+      - name: loja_id
+        description: FK para stg_lojas
+        tests:
+          - not_null
+      - name: data_venda
+        description: Data da venda (date)
+        tests:
+          - not_null
+      - name: hora_venda
+        description: Hora da venda (time)
+      - name: forma_pagamento_id
+        description: FK para formas_pagamento (seed)
+      - name: status_venda
+        description: Status normalizado da venda
+        tests:
+          - accepted_values:
+              values: ["CONCLUIDA", "CANCELADA", "DEVOLVIDA"]
+      - name: valor_desconto
+        description: Valor de desconto (>= 0)
+      - name: created_at
+        description: Timestamp de criação
+      - name: updated_at
+        description: Timestamp de atualização
+
+  - name: stg_itens_venda
+    description: >
+      Staging dos itens de venda. Calcula valor bruto e valor líquido
+      por item a partir de quantidade, preço e desconto.
+    columns:
+      - name: item_id
+        description: PK do item
+        tests:
+          - unique
+          - not_null
+      - name: venda_id
+        description: FK para stg_vendas
+        tests:
+          - not_null
+      - name: produto_id
+        description: FK para stg_produtos
+        tests:
+          - not_null
+      - name: quantidade
+        description: Quantidade vendida (inteiro positivo)
+      - name: preco_unitario
+        description: Preço unitário no momento da venda
+      - name: valor_desconto_item
+        description: Desconto aplicado ao item
+      - name: valor_bruto_item
+        description: quantidade * preco_unitario
+      - name: valor_liquido_item
+        description: valor_bruto_item - valor_desconto_item
+
+  - name: stg_clientes
+    description: >
+      Staging de clientes. Padroniza campos de texto, mascara dados
+      sensíveis e calcula idade a partir da data de nascimento.
+    columns:
+      - name: cliente_id
+        description: PK do cliente
+        tests:
+          - unique
+          - not_null
+      - name: nome_completo
+        description: Nome completo padronizado (upper case)
+      - name: email
+        description: E-mail em lower case
+        tests:
+          - unique
+          - not_null
+      - name: cpf_mascarado
+        description: CPF com máscara (***.***.***-**)
+      - name: data_nascimento
+        description: Data de nascimento
+      - name: idade
+        description: Idade calculada em anos completos
+      - name: genero
+        description: Gênero normalizado
+        tests:
+          - accepted_values:
+              values: ["M", "F", "N"]
+      - name: cidade
+        description: Cidade do cliente
+      - name: estado
+        description: UF do cliente (2 caracteres)
+      - name: data_cadastro
+        description: Data de cadastro
+      - name: ativo
+        description: Flag booleano de cliente ativo
+
+  - name: stg_produtos
+    description: >
+      Staging de produtos. Calcula margem bruta e categoriza
+      produtos por faixa de preço.
+    columns:
+      - name: produto_id
+        description: PK do produto
+        tests:
+          - unique
+          - not_null
+      - name: sku
+        description: SKU em maiúsculas
+        tests:
+          - unique
+          - not_null
+      - name: nome_produto
+        description: Nome do produto
+        tests:
+          - not_null
+      - name: categoria_id
+        description: FK para seed categorias_produto
+      - name: fornecedor_id
+        description: FK para stg_fornecedores
+      - name: preco_custo
+        description: Preço de custo
+      - name: preco_venda
+        description: Preço de venda
+      - name: margem_bruta
+        description: (preco_venda - preco_custo) / preco_venda
+      - name: faixa_preco
+        description: "Classificação: ECONOMICO, MEDIO, PREMIUM"
+      - name: estoque_atual
+        description: Quantidade em estoque
+      - name: ativo
+        description: Flag booleano de produto ativo
+
+  - name: stg_lojas
+    description: >
+      Staging de lojas. Padroniza campos e classifica lojas por
+      tipo de canal de venda.
+    columns:
+      - name: loja_id
+        description: PK da loja
+        tests:
+          - unique
+          - not_null
+      - name: nome_loja
+        description: Nome da loja
+        tests:
+          - not_null
+      - name: tipo_loja
+        description: Tipo de canal
+        tests:
+          - accepted_values:
+              values: ["FISICA", "ECOMMERCE", "MARKETPLACE"]
+      - name: cidade
+        description: Cidade da loja
+      - name: estado
+        description: UF da loja
+      - name: data_abertura
+        description: Data de abertura
+      - name: anos_operacao
+        description: Quantidade de anos em operação
+      - name: ativa
+        description: Flag booleano de loja ativa
+
+  - name: stg_fornecedores
+    description: Staging de fornecedores com padronização de campos.
+    columns:
+      - name: fornecedor_id
+        description: PK do fornecedor
+        tests:
+          - unique
+          - not_null
+      - name: nome_fornecedor
+        description: Razão social padronizada
+        tests:
+          - not_null
+      - name: cnpj_mascarado
+        description: CNPJ formatado
+      - name: cidade
+        description: Cidade do fornecedor
+      - name: estado
+        description: UF do fornecedor
+      - name: ativo
+        description: Flag booleano de fornecedor ativo
